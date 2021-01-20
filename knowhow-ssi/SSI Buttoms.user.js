@@ -174,11 +174,34 @@ function fnc_create_drop_down(id, name, text){
   });
 }
 
-
+var linkToRedmine = false;
+function fncAddRedmineBtn(){
+  //https://redmine.hg.com.uy/favicon.ico
+  var btnRedmine = $('<buttom class="redmine_ico" id="btnRedmine" style="cursor: pointer; border:2px;"><img style="cursor: pointer; padding-left: 0px; width:24px; height:90%;" src="https://redmine.hg.com.uy/favicon.ico" alt="Abrir ticket en redmine" title="Abrir ticket en redmine"></button>');
+  title = $("#vTAREATITDSC").val().split("#");
+  url = "https://redmine.hg.com.uy/issues/" + title[1].replace("]", "");
+  $("#vTAREATITDSC").parent().append( btnRedmine ); 
+  //btnRedmine.append(" - " + title[1].replace("]", ""));
+  btnRedmine.click(function() { 
+    var win = window.open(url, '_blank');
+    win.focus();
+  });
+}
 
 $(document).ready(function () {  
   $.getJSON( "http://reportes.knowhow.com.uy/js/ssi.json", function(data) {
     prefix = data;
+    // Lista de los clientes con sus ids
+    /*var json_clients = new Array();
+    $("#vTAREACLIENTEID > option").map(function() {
+      if ($(this).val() != 0){
+        json_clients.push({
+          id: $(this).val(),
+          name: $(this).text()
+        }); 
+      }
+    });
+    */
     // Usuario del sistema
     username = $("#TXT_CONTACTOUSUID_MPAGE").text();
     // Creamos el dropdown para el boton remoto
@@ -312,6 +335,13 @@ $(document).ready(function () {
     current_date = d + "/" + m + "/" + y + " " + hours + ":" + minutes;
     if($("#run_timer").is(':checked')){
       $('#vTAREALINEAHRFIN').val(current_date);
+    }
+    
+    $('.redmine_ico').remove();
+    linkToRedmine = false;
+    if ($("#vTAREATITDSC").val().indexOf("[HG#") >= 0 && !linkToRedmine){
+      linkToRedmine = true;
+      fncAddRedmineBtn();
     }
     
   },1000);
